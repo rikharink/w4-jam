@@ -7,12 +7,10 @@ mod engine;
 mod game;
 mod snake;
 mod wasm4;
-mod wasm4wrapper;
+use engine::rendering::set_palette;
 use game::*;
 use lazy_static::lazy_static;
 use std::sync::Mutex;
-
-use wasm4wrapper::*;
 
 lazy_static! {
     static ref GAME: Mutex<Game> = Mutex::new(Game::new());

@@ -1,6 +1,8 @@
-use std::ops::{Add, Sub};
+use std::ops::{Add, Div, Mul, Sub};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+use nanoserde::{DeBin, SerBin};
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, DeBin, SerBin)]
 pub struct Point {
     pub x: i32,
     pub y: i32,
@@ -30,6 +32,28 @@ impl Sub<Point> for Point {
         Self {
             x: self.x - rhs.x,
             y: self.y - rhs.y,
+        }
+    }
+}
+
+impl Mul<i32> for Point {
+    type Output = Self;
+
+    fn mul(self, rhs: i32) -> Self::Output {
+        Self {
+            x: self.x * rhs,
+            y: self.y * rhs,
+        }
+    }
+}
+
+impl Div<i32> for Point {
+    type Output = Self;
+
+    fn div(self, rhs: i32) -> Self::Output {
+        Self {
+            x: self.x / rhs,
+            y: self.y / rhs,
         }
     }
 }

@@ -1,7 +1,10 @@
+use nanoserde::{DeBin, SerBin};
+
+use crate::engine::rendering::set_draw_color;
 use crate::engine::{point, point::Point};
 use crate::wasm4;
-use crate::wasm4wrapper::set_draw_color;
 
+#[derive(SerBin, DeBin)]
 pub struct Snake {
     pub direction: Point,
     pub body: Vec<Point>,

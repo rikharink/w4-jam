@@ -1,5 +1,25 @@
-use crate::{wasm4, wasm4wrapper::*};
+use crate::wasm4;
+use nanoserde::{DeBin, SerBin};
 
+pub enum GamepadIndex {
+    One = 1,
+    Two = 2,
+    Three = 3,
+    Four = 4,
+}
+
+pub fn get_gamepad(gamepad: GamepadIndex) -> u8 {
+    unsafe {
+        match gamepad {
+            GamepadIndex::One => *wasm4::GAMEPAD1,
+            GamepadIndex::Two => *wasm4::GAMEPAD2,
+            GamepadIndex::Three => *wasm4::GAMEPAD3,
+            GamepadIndex::Four => *wasm4::GAMEPAD4,
+        }
+    }
+}
+
+#[derive(SerBin, DeBin)]
 pub struct Gamepad {
     value: u8,
     previous_value: u8,

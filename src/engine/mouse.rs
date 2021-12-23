@@ -1,6 +1,8 @@
 use super::point::Point;
 use crate::wasm4;
+use nanoserde::{DeBin, SerBin};
 
+#[derive(SerBin, DeBin)]
 pub struct Mouse {
     pub previous_position: Point,
     pub position: Point,
@@ -28,18 +30,6 @@ impl Mouse {
         }
         self.delta.x = self.position.x - self.previous_position.x;
         self.delta.y = self.position.y - self.previous_position.y;
-
-        // wasm4::trace(format!("position {:?} delta {:?}", self.position, self.delta));
-        if self.right_released() {
-            wasm4::trace("RIGHT");
-        }
-        if self.middle_released() {
-            wasm4::trace("MIDDLE");
-        }
-
-        if self.left_released() {
-            wasm4::trace("LEFT");
-        }
 
         self.previous_value = self.value;
         self.previous_position = self.position;

@@ -1,7 +1,9 @@
+use crate::engine::io::Saveable;
 use crate::engine::{gamepad::Gamepad, mouse::Mouse};
 use crate::snake::Snake;
-use crate::wasm4;
+use nanoserde::{DeBin, SerBin};
 
+#[derive(SerBin, DeBin)]
 pub struct Game {
     frame_count: usize,
     gamepad: Gamepad,
@@ -9,14 +11,22 @@ pub struct Game {
     snake: Snake,
 }
 
-impl Game {
-    pub fn new() -> Self {
+impl Saveable for Game {}
+
+impl Default for Game {
+    fn default() -> Self {
         Self {
             gamepad: Gamepad::new(),
             mouse: Mouse::new(),
             frame_count: 0,
             snake: Snake::new(),
         }
+    }
+}
+
+impl Game {
+    pub fn new() -> Self {
+        Game::restore().unwrap_or_default()
     }
 
     fn handle_input(&mut self) {
@@ -38,8 +48,8 @@ impl Game {
         self.handle_input();
         let dropped_pos = self.snake.update();
         self.snake.draw();
-        if self.mouse.left_released() {
-            wasm4::trace("mouse left released!");
+        if self.frame_count % 60 == 0 {
+            self.save();
         }
     }
 }
