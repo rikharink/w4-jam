@@ -1,6 +1,8 @@
 pub mod gamepad;
+pub mod gui;
 pub mod io;
 pub mod logging;
+pub mod managers;
 pub mod mouse;
 pub mod point;
 pub mod rendering;

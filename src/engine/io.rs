@@ -1,6 +1,5 @@
-use nanoserde::{DeBin, DeBinErr, SerBin};
-
 use crate::wasm4;
+use nanoserde::{DeBin, DeBinErr, SerBin};
 
 pub trait Saveable {
     fn save(&self)

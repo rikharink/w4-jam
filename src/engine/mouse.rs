@@ -23,6 +23,9 @@ impl Mouse {
     }
 
     pub fn update(&mut self) {
+        self.previous_value = self.value;
+        self.previous_position = self.position;
+
         unsafe {
             self.position.x = (*wasm4::MOUSE_X).into();
             self.position.y = (*wasm4::MOUSE_Y).into();
@@ -30,9 +33,6 @@ impl Mouse {
         }
         self.delta.x = self.position.x - self.previous_position.x;
         self.delta.y = self.position.y - self.previous_position.y;
-
-        self.previous_value = self.value;
-        self.previous_position = self.position;
     }
 
     pub fn left_pressed(&self) -> bool {
