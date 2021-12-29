@@ -5,6 +5,7 @@
 mod alloc;
 mod engine;
 mod game;
+mod math;
 mod wasm4;
 use crate::game::State;
 use engine::rendering::set_palette;

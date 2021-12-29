@@ -1,12 +1,14 @@
-use crate::engine::point::Point;
-use crate::wasm4;
+use crate::{
+    math::{geometry::Rect, vector::IVec2},
+    wasm4,
+};
 use nanoserde::{DeBin, SerBin};
 
 #[derive(SerBin, DeBin)]
 pub struct Mouse {
-    pub previous_position: Point,
-    pub position: Point,
-    pub delta: Point,
+    pub previous_position: IVec2,
+    pub position: IVec2,
+    pub delta: IVec2,
     value: u8,
     previous_value: u8,
 }
@@ -14,9 +16,9 @@ pub struct Mouse {
 impl Mouse {
     pub fn new() -> Self {
         Self {
-            previous_position: Point::new(0, 0),
-            position: Point::new(0, 0),
-            delta: Point::new(0, 0),
+            previous_position: IVec2(0, 0),
+            position: IVec2(0, 0),
+            delta: IVec2(0, 0),
             value: 0,
             previous_value: 0,
         }
@@ -27,12 +29,12 @@ impl Mouse {
         self.previous_position = self.position;
 
         unsafe {
-            self.position.x = (*wasm4::MOUSE_X).into();
-            self.position.y = (*wasm4::MOUSE_Y).into();
+            self.position.0 = (*wasm4::MOUSE_X).into();
+            self.position.1 = (*wasm4::MOUSE_Y).into();
             self.value = *wasm4::MOUSE_BUTTONS;
         }
-        self.delta.x = self.position.x - self.previous_position.x;
-        self.delta.y = self.position.y - self.previous_position.y;
+        self.delta.0 = self.position.x() - self.previous_position.x();
+        self.delta.1 = self.position.y() - self.previous_position.y();
     }
 
     pub fn left_pressed(&self) -> bool {
@@ -60,6 +62,13 @@ impl Mouse {
     pub fn right_released(&self) -> bool {
         let prev: Mouse = self.previous_value.into();
         !self.right_pressed() && prev.right_pressed()
+    }
+
+    pub fn hit(&self, hitbox: Rect) -> bool {
+        self.position.x() >= hitbox.position.x()
+            && self.position.y() >= hitbox.position.y()
+            && self.position.x() <= hitbox.position.x() + (hitbox.size.width() as i32)
+            && self.position.y() <= hitbox.position.y() + (hitbox.size.height() as i32)
     }
 }
 

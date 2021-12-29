@@ -2,6 +2,7 @@
 // WASM-4: https://wasm4.org/docs
 
 #![allow(unused)]
+#![allow(clippy::too_many_arguments)]
 
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │                                                                           │

@@ -1,7 +1,12 @@
 use super::starfield::Starfield;
 use crate::{
-    engine::{imwui, io::Saveable, managers::MANAGERS, point::Point, rendering::Palette},
-    wasm4,
+    engine::{
+        imwui,
+        io::Saveable,
+        managers::MANAGERS,
+        rendering::{DrawColor, Palette},
+    },
+    math::vector::IVec2,
 };
 use lazy_static::lazy_static;
 use nanoserde::{DeBin, SerBin};
@@ -40,10 +45,6 @@ impl State {
     }
 
     pub fn render(&self) {
-        self.save();
-        Self::restore().expect("state restore");
-        if imwui::begin_button("START", Point::new(60, 70), 50, 20) {
-            wasm4::trace("CLICK START");
-        }
+        let start_clicked = imwui::draw_button("start", IVec2(60, 70), &DrawColor::new(3, 4, 0, 0));
     }
 }
