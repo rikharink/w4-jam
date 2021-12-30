@@ -18,6 +18,8 @@ pub fn set_palette(palette: Palette) {
         *wasm4::PALETTE = palette.0;
     }
 }
+
+#[inline]
 pub fn put_pixel(x: i32, y: i32, color: u8) {
     let idx = (y as usize * 160 + x as usize) >> 2;
     let shift = (x as u8 & 0b11) << 1;

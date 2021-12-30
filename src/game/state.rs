@@ -1,6 +1,6 @@
 use std::sync::Mutex;
 
-use super::starfield::Starfield;
+use super::background::Background;
 use crate::engine::{
     imwui,
     managers::MANAGERS,
@@ -10,7 +10,7 @@ use crate::engine::{
 use lazy_static::lazy_static;
 
 lazy_static! {
-    static ref BACKGROUND: Mutex<Starfield> = Mutex::new(Starfield::new(120, 3));
+    static ref BACKGROUND: Mutex<Background> = Mutex::new(Background::new(120, 3));
 }
 
 pub struct State {
@@ -39,13 +39,13 @@ impl State {
             .lock()
             .expect("managers")
             .update(self.current_frame);
-        if imwui::begin_button("start", IVec2(60, 70), &DrawColor::new(3, 4, 0, 0)) {
+        if imwui::button("start", IVec2(60, 70), &DrawColor::new(3, 4, 0, 0)) {
             MANAGERS
                 .lock()
                 .expect("managers")
                 .rng
                 .seed(self.current_frame);
-            BACKGROUND.lock().expect("background").regenerate(120, 3);
+            BACKGROUND.lock().expect("background").regenerate(120);
         }
     }
 }

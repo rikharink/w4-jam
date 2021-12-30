@@ -1,6 +1,5 @@
 mod splitmix64;
 mod xoshiro;
-use std::ops::RangeInclusive;
 
 pub use splitmix64::*;
 pub use xoshiro::*;
@@ -15,9 +14,7 @@ pub trait Rng {
         ((result >> 11) as f64) * 1.110223e-16
     }
 
-    fn next_range(&mut self, range: RangeInclusive<u64>) -> u64 {
-        let start = range.start();
-        let end = range.end();
+    fn next_range(&mut self, start: u64, end: u64) -> u64 {
         start + self.next() / (self.max() / (end - start + 1) + 1)
     }
 
