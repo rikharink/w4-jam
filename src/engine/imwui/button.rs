@@ -1,8 +1,7 @@
+use crate::engine::{managers::MANAGERS, point::Point, rendering::set_draw_colors};
 use crate::wasm4;
 
-use super::{managers::MANAGERS, point::Point, rendering::set_draw_colors};
-
-pub fn draw_button(label: &str, position: Point, width: u32, height: u32) -> bool {
+pub fn begin_button(label: &str, position: Point, width: u32, height: u32) -> bool {
     let mouse = &MANAGERS.lock().expect("game_managers").mouse;
     let mouse_hit = mouse.position.x >= position.x
         && mouse.position.y >= position.y

@@ -1,4 +1,4 @@
-use super::{gamepad::Gamepad, mouse::Mouse};
+use super::control::{gamepad::Gamepad, mouse::Mouse};
 use lazy_static::lazy_static;
 use rand::prelude::*;
 use rand_pcg::Pcg64;

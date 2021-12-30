@@ -1,8 +1,6 @@
 use super::starfield::Starfield;
 use crate::{
-    engine::{
-        gui::draw_button, io::Saveable, managers::MANAGERS, point::Point, rendering::Palette,
-    },
+    engine::{imwui, io::Saveable, managers::MANAGERS, point::Point, rendering::Palette},
     wasm4,
 };
 use lazy_static::lazy_static;
@@ -14,7 +12,7 @@ lazy_static! {
 
 #[derive(SerBin, DeBin)]
 pub struct State {
-    pub frame_count: usize,
+    pub frame_count: u64,
     pub palette: Palette,
 }
 
@@ -42,8 +40,9 @@ impl State {
     }
 
     pub fn render(&self) {
-        let start_clicked = draw_button("START", Point::new(60, 70), 50, 20);
-        if start_clicked {
+        self.save();
+        Self::restore().expect("state restore");
+        if imwui::begin_button("START", Point::new(60, 70), 50, 20) {
             wasm4::trace("CLICK START");
         }
     }

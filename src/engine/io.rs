@@ -4,12 +4,14 @@ use nanoserde::{DeBin, DeBinErr, SerBin};
 pub trait Saveable {
     fn save(&self)
     where
-        Self: SerBin,
+        Self: SerBin + Sized,
     {
-        let bytes = &SerBin::serialize_bin(self)[..];
-        let size = (core::mem::size_of::<u8>() * bytes.len()) as u32;
+        let data = SerBin::serialize_bin(self);
+        let data_size = (core::mem::size_of::<u8>() * data.len()) as u32;
+        let mut to_write = SerBin::serialize_bin(&data_size);
+        to_write.append(&mut SerBin::serialize_bin(&data));
         unsafe {
-            wasm4::diskw(bytes.as_ptr(), size);
+            wasm4::diskw(to_write.as_ptr(), data_size);
         }
     }
 
@@ -17,13 +19,22 @@ pub trait Saveable {
     where
         Self: DeBin,
     {
-        let mut buffer = [0u8; 1024];
+        let mut size_buffer = [0u8; 4];
         unsafe {
             wasm4::diskr(
-                buffer.as_mut_ptr(),
-                (1024 * core::mem::size_of::<u8>()) as u32,
+                size_buffer.as_mut_ptr(),
+                4 * core::mem::size_of::<u8>() as u32,
             );
         }
-        DeBin::deserialize_bin(&buffer)
+        let size: u32 = u32::from_le_bytes(size_buffer);
+        //TODO: make this better than random hardcoded value?
+        let mut bytes_buffer = [0u8; 512];
+        unsafe {
+            wasm4::diskr(
+                bytes_buffer.as_mut_ptr(),
+                ((4 + size as usize) * core::mem::size_of::<u8>()) as u32,
+            );
+        }
+        DeBin::deserialize_bin(&bytes_buffer[4..])
     }
 }

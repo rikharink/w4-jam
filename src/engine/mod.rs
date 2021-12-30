@@ -1,9 +1,7 @@
-pub mod gamepad;
-pub mod gui;
+pub mod audio;
+pub mod control;
+pub mod imwui;
 pub mod io;
-pub mod logging;
 pub mod managers;
-pub mod mouse;
 pub mod point;
 pub mod rendering;
-pub mod sound;

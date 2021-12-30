@@ -1,4 +1,4 @@
-use super::point::Point;
+use crate::engine::point::Point;
 use crate::wasm4;
 use nanoserde::{DeBin, SerBin};
 
