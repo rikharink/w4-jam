@@ -1,11 +1,11 @@
 use crate::{
-    math::{geometry::Rect, vector::IVec2},
+    engine::math::{geometry::Rect, vector::IVec2},
     wasm4,
 };
-use nanoserde::{DeBin, SerBin};
 
-#[derive(SerBin, DeBin)]
 pub struct Mouse {
+    pub current_frame: u64,
+    pub last_click: [u64; 3],
     pub previous_position: IVec2,
     pub position: IVec2,
     pub delta: IVec2,
@@ -16,6 +16,8 @@ pub struct Mouse {
 impl Mouse {
     pub fn new() -> Self {
         Self {
+            current_frame: 0,
+            last_click: [0; 3],
             previous_position: IVec2(0, 0),
             position: IVec2(0, 0),
             delta: IVec2(0, 0),
@@ -24,9 +26,10 @@ impl Mouse {
         }
     }
 
-    pub fn update(&mut self) {
+    pub fn update(&mut self, current_frame: u64) {
         self.previous_value = self.value;
         self.previous_position = self.position;
+        self.current_frame = current_frame;
 
         unsafe {
             self.position.0 = (*wasm4::MOUSE_X).into();
@@ -35,6 +38,16 @@ impl Mouse {
         }
         self.delta.0 = self.position.x() - self.previous_position.x();
         self.delta.1 = self.position.y() - self.previous_position.y();
+
+        if self.left_released() {
+            self.last_click[0] = current_frame;
+        }
+        if self.middle_released() {
+            self.last_click[1] = current_frame;
+        }
+        if self.right_released() {
+            self.last_click[2] = current_frame;
+        }
     }
 
     pub fn left_pressed(&self) -> bool {
@@ -64,11 +77,11 @@ impl Mouse {
         !self.right_pressed() && prev.right_pressed()
     }
 
-    pub fn hit(&self, hitbox: Rect) -> bool {
-        self.position.x() >= hitbox.position.x()
-            && self.position.y() >= hitbox.position.y()
-            && self.position.x() <= hitbox.position.x() + (hitbox.size.width() as i32)
-            && self.position.y() <= hitbox.position.y() + (hitbox.size.height() as i32)
+    pub fn hits(&self, hitbox: Rect) -> bool {
+        self.position.x() >= hitbox.top_left.x()
+            && self.position.y() >= hitbox.top_left.y()
+            && self.position.x() <= hitbox.top_left.x() + (hitbox.size.width() as i32)
+            && self.position.y() <= hitbox.top_left.y() + (hitbox.size.height() as i32)
     }
 }
 

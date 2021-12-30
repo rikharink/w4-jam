@@ -1,5 +1,4 @@
 use crate::wasm4;
-use nanoserde::{DeBin, SerBin};
 
 pub enum GamepadIndex {
     One = 1,
@@ -19,7 +18,6 @@ pub fn get_gamepad(gamepad: GamepadIndex) -> u8 {
     }
 }
 
-#[derive(SerBin, DeBin)]
 pub struct Gamepad {
     value: u8,
     previous_value: u8,

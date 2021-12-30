@@ -1,11 +1,9 @@
 use std::ops::{Add, Sub};
 
-use nanoserde::{DeBin, SerBin};
-
-#[derive(Copy, Clone, DeBin, SerBin, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub struct UVec2(pub u32, pub u32);
 
-#[derive(Copy, Clone, DeBin, SerBin, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub struct IVec2(pub i32, pub i32);
 
 impl IVec2 {

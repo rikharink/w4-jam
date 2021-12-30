@@ -1,5 +1,4 @@
 use crate::wasm4::{self, FRAMEBUFFER};
-use nanoserde::{DeBin, SerBin};
 
 pub fn set_draw_colors(draw_colors: &DrawColor) {
     unsafe {
@@ -11,7 +10,7 @@ pub fn get_draw_colors() -> u16 {
     unsafe { *wasm4::DRAW_COLORS }
 }
 
-#[derive(Debug, SerBin, DeBin, Copy, Clone)]
+#[derive(Debug, Copy, Clone)]
 pub struct Palette(pub [u32; 4]);
 
 pub fn set_palette(palette: Palette) {
