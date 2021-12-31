@@ -15,8 +15,8 @@ fn rotl(x: u64, k: i32) -> u64 {
     (x << k) | (x >> (64 - k))
 }
 
-impl Xoshiro256PlusPlus {
-    pub fn new(seed: u64) -> Self {
+impl Rng for Xoshiro256PlusPlus {
+    fn new(seed: u64) -> Self {
         let mut state = [0u64; 4];
         let mut seed_eng = SplitMix64::new(seed);
         state[0] = seed_eng.next();
@@ -25,9 +25,7 @@ impl Xoshiro256PlusPlus {
         state[3] = seed_eng.next();
         Self { state }
     }
-}
 
-impl Rng for Xoshiro256PlusPlus {
     fn max(&self) -> u64 {
         u64::MAX
     }
@@ -60,8 +58,8 @@ pub struct Xoshiro256Plus {
     pub state: [u64; 4],
 }
 
-impl Xoshiro256Plus {
-    pub fn new(seed: u64) -> Self {
+impl Rng for Xoshiro256Plus {
+    fn new(seed: u64) -> Self {
         let mut state = [0u64; 4];
         let mut seed_eng = SplitMix64::new(seed);
         state[0] = seed_eng.next();
@@ -70,16 +68,14 @@ impl Xoshiro256Plus {
         state[3] = seed_eng.next();
         Self { state }
     }
-}
 
-impl Rng for Xoshiro256Plus {
     fn max(&self) -> u64 {
         u64::MAX
     }
 
     fn next(&mut self) -> u64 {
         let s = &mut self.state;
-        let result = s[0] + s[3];
+        let result = s[0].wrapping_add(s[3]);
         let t = s[1] << 17;
         s[2] ^= s[0];
         s[3] ^= s[1];

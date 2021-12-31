@@ -4,13 +4,16 @@ use super::background::Background;
 use crate::engine::{
     imwui,
     managers::MANAGERS,
-    math::{rng::Rng, vector::IVec2},
+    math::{
+        rng::{Rng, Xoshiro256Plus},
+        vector::IVec2,
+    },
     rendering::{DrawColor, Palette},
 };
 use lazy_static::lazy_static;
 
 lazy_static! {
-    static ref BACKGROUND: Mutex<Background> = Mutex::new(Background::new(120, 3));
+    static ref BACKGROUND: Mutex<Background<Xoshiro256Plus>> = Mutex::new(Background::new(120, 3));
 }
 
 pub struct State {

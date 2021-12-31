@@ -5,6 +5,8 @@ pub use splitmix64::*;
 pub use xoshiro::*;
 
 pub trait Rng {
+    fn new(seed: u64) -> Self;
+
     fn max(&self) -> u64;
 
     fn next(&mut self) -> u64;
@@ -16,6 +18,10 @@ pub trait Rng {
 
     fn next_range(&mut self, start: u64, end: u64) -> u64 {
         start + self.next() / (self.max() / (end - start + 1) + 1)
+    }
+
+    fn coin_flip(&mut self) -> bool {
+        self.next_f64() > 0.5
     }
 
     fn seed(&mut self, seed: u64);

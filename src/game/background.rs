@@ -1,21 +1,16 @@
-use crate::engine::{
-    managers::MANAGERS,
-    math::rng::{Rng, Xoshiro256PlusPlus},
-    rendering::put_pixel,
-};
+use crate::engine::{math::rng::Rng, rendering::put_pixel};
 
-pub struct Background {
-    rng: Xoshiro256PlusPlus,
+pub struct Background<T: Rng> {
+    rng: T,
 }
 
-impl Background {
+impl<T: Rng + Copy> Background<T> {
     pub fn new(number_of_stars: usize, color: u8) -> Self {
-        let rng = &mut MANAGERS.lock().expect("managers").rng;
-        Self { rng: *rng }
+        Self { rng: T::new(123) }
     }
 
     pub fn regenerate(&mut self, number_of_stars: usize) {
-        self.rng = Xoshiro256PlusPlus::new(self.rng.next());
+        self.rng = T::new(self.rng.next());
     }
 
     pub fn render(&mut self) {
