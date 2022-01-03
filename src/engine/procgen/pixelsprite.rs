@@ -1,5 +1,3 @@
-use std::fmt::Display;
-
 use crate::engine::math::rng::Rng;
 
 // Pixel Sprite Generator v0.0.2
@@ -238,21 +236,21 @@ impl<TRNG: Rng + Copy, const SIZE: usize, const MASK_SIZE: usize>
     }
 }
 
-impl<TRNG: Rng + Copy, const SIZE: usize, const MASK_SIZE: usize> Display
-    for PixelSprite<TRNG, SIZE, MASK_SIZE>
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let mut result = String::new();
-        for y in 0..self.height {
-            for x in 0..self.width {
-                match self.get_data(x, y) {
-                    SpriteData::Border => result += "▓",
-                    SpriteData::Empty => result += "░",
-                    SpriteData::Body => result += "▒",
-                }
-            }
-            result += "\n";
-        }
-        write!(f, "{}", result)
-    }
-}
+// impl<TRNG: Rng + Copy, const SIZE: usize, const MASK_SIZE: usize> Display
+//     for PixelSprite<TRNG, SIZE, MASK_SIZE>
+// {
+//     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+//         let mut result = String::new();
+//         for y in 0..self.height {
+//             for x in 0..self.width {
+//                 match self.get_data(x, y) {
+//                     SpriteData::Border => result += "▓",
+//                     SpriteData::Empty => result += "░",
+//                     SpriteData::Body => result += "▒",
+//                 }
+//             }
+//             result += "\n";
+//         }
+//         write!(f, "{}", result)
+//     }
+// }

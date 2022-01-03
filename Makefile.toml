@@ -21,7 +21,7 @@ dependencies = ["clean"]
 [tasks.copy]
 script = [
     "mkdir -p dist",
-    "cp target/wasm32-unknown-unknown/release/*.wasm dist/cart.wasm"
+    "cp target/wasm32-unknown-unknown/release/*.wasm dist/cart.wasm",
 ]
 
 [tasks.wasm-snip]
@@ -40,26 +40,16 @@ script = "w4 run dist/cart.wasm"
 script = "w4 watch"
 
 [tasks.w4]
-dependencies = [
-    "format",
-    "clean",
-    "build",
-    "copy",
-    "wasm-snip",
-    "wasm-opt",
-    "stat"
-]
+dependencies = ["build", "copy", "wasm-snip", "wasm-opt", "stat"]
 
 [tasks.w4-run]
-dependencies = [
-    "w4",
-    "run"
-]
+dependencies = ["w4", "run"]
 
 [tasks.w4-bundle]
-script = [
-    "w4 bundle dist/cart.wasm --html public/index.html"
-]
+script = ["w4 bundle dist/cart.wasm --html public/index.html"]
+dependencies = ["clean", "w4"]
+
+[tasks.w4-watch]
 dependencies = ["w4"]
 
 [tasks.default]

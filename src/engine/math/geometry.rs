@@ -6,7 +6,7 @@ pub struct Rect {
 }
 
 impl Rect {
-    pub(crate) fn new(position: IVec2, size: UVec2) -> Self {
+    pub fn new(position: IVec2, size: UVec2) -> Self {
         Self {
             top_left: position,
             size,

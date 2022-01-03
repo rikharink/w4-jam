@@ -1,5 +1,3 @@
-use crate::game::State;
-
 use super::{
     control::{gamepad::Gamepad, mouse::Mouse},
     math::rng::{Rng, Xoshiro256PlusPlus},
@@ -7,14 +5,14 @@ use super::{
 
 static mut MANAGERS: Option<Managers<Xoshiro256PlusPlus>> = None;
 
-pub fn init_managers() {
+pub fn init() {
     let managers = unsafe { &mut MANAGERS };
-    *managers = Some(Managers {
+    let mngs = Managers {
         rng: Xoshiro256PlusPlus::new(428281),
         gamepad: Gamepad::new(),
         mouse: Mouse::new(),
-        state: State::new(),
-    });
+    };
+    *managers = Some(mngs);
 }
 
 pub fn get_managers() -> &'static Option<Managers<Xoshiro256PlusPlus>> {
@@ -31,7 +29,6 @@ pub struct Managers<T: Rng> {
     pub gamepad: Gamepad,
     pub mouse: Mouse,
     pub rng: T,
-    pub state: State,
 }
 
 impl<T: Rng> Managers<T> {

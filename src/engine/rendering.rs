@@ -6,8 +6,11 @@ pub fn set_draw_colors(draw_colors: &DrawColor) {
     }
 }
 
-pub fn get_draw_colors() -> u16 {
-    unsafe { *wasm4::DRAW_COLORS }
+pub fn get_draw_colors() -> DrawColor {
+    unsafe {
+        let color_value = *wasm4::DRAW_COLORS;
+        color_value.into()
+    }
 }
 
 #[derive(Debug, Copy, Clone)]
@@ -59,5 +62,16 @@ impl DrawColor {
 
     pub fn value(&self) -> u16 {
         (self.color_4() << 12) + (self.color_3() << 8) + (self.color_2() << 4) + self.color_1()
+    }
+}
+
+impl From<u16> for DrawColor {
+    fn from(value: u16) -> Self {
+        let mut colors: [u16; 4] = [0; 4];
+        colors[0] = value & 0xF;
+        colors[1] = (value >> 4) & 0xF;
+        colors[2] = (value >> 8) & 0xF;
+        colors[3] = (value >> 12) & 0xF;
+        DrawColor { colors }
     }
 }

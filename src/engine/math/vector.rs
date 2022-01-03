@@ -1,4 +1,4 @@
-use std::ops::{Add, Sub};
+use core::ops::{Add, Sub};
 
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub struct UVec2(pub u32, pub u32);

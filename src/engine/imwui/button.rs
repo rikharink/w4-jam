@@ -5,42 +5,49 @@ use crate::{
             geometry::Rect,
             vector::{IVec2, UVec2},
         },
-        rendering::{set_draw_colors, DrawColor},
+        rendering::{get_draw_colors, set_draw_colors, DrawColor},
     },
-    unwrap_abort, wasm4,
+    wasm4,
 };
 
-const FONT_SIZE: u32 = 8;
+use super::{control::Response, measure_text};
 
-fn measure_text(text: &str) -> UVec2 {
-    let lines: Vec<&str> = text.split('\n').collect();
-    let nr_lines = lines.len() as u32;
-    let max_width = unwrap_abort(lines.iter().map(|l| l.len()).max()) as u32;
+pub fn button(label: &str, position: IVec2) -> Response {
+    let color = get_draw_colors();
+    let inverse_color = DrawColor::new(
+        color.color_2(),
+        color.color_1(),
+        color.color_3(),
+        color.color_4(),
+    );
 
-    UVec2(max_width * FONT_SIZE, nr_lines * FONT_SIZE)
-}
-
-pub fn button(label: &str, position: IVec2, color: &DrawColor) -> bool {
     let padding: UVec2 = UVec2(4, 4);
-    let inverse_color = DrawColor::new(color.color_2(), color.color_1(), 0, 0);
     let size = (measure_text(label) + padding + padding) - UVec2(1, 1);
-    let managers = unwrap_abort(get_managers().as_ref());
+    let managers = get_managers().as_ref().unwrap();
     let mouse = &managers.mouse;
 
     let mouse_hit = mouse.hits(Rect::new(position, size));
-    set_draw_colors(color);
-    if mouse_hit && mouse.left_pressed() {
+    let pressed = mouse.left_pressed() & mouse_hit;
+    if pressed {
         set_draw_colors(&inverse_color);
     }
     wasm4::rect(position.x(), position.y(), size.width(), size.height());
     set_draw_colors(&inverse_color);
-    if mouse_hit && mouse.left_pressed() {
-        set_draw_colors(color);
+    if pressed {
+        set_draw_colors(&color);
     }
     wasm4::text(
         label,
         position.x() + padding.x() as i32,
         position.y() + padding.y() as i32,
     );
-    mouse.left_released() && mouse_hit
+    set_draw_colors(&color);
+
+    if pressed {
+        Response::Pressed(position)
+    } else if mouse.left_released() && mouse_hit {
+        Response::Clicked(position)
+    } else {
+        Response::None
+    }
 }

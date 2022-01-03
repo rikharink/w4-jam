@@ -1,13 +1,4 @@
-use crate::engine::math::{
-    geometry::Rect,
-    vector::{IVec2, UVec2},
-};
-
-pub trait Control {
-    fn top_left() -> IVec2;
-    fn size() -> UVec2;
-    fn bounding_box() -> Rect;
-}
+use crate::engine::math::vector::IVec2;
 
 pub enum Response {
     Focused,
