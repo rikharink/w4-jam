@@ -1,6 +1,6 @@
 use crate::{
     engine::{
-        managers::MANAGERS,
+        managers::get_managers,
         math::{
             geometry::Rect,
             vector::{IVec2, UVec2},
@@ -24,7 +24,8 @@ pub fn button(label: &str, position: IVec2, color: &DrawColor) -> bool {
     let padding: UVec2 = UVec2(4, 4);
     let inverse_color = DrawColor::new(color.color_2(), color.color_1(), 0, 0);
     let size = (measure_text(label) + padding + padding) - UVec2(1, 1);
-    let mouse = &MANAGERS.lock().expect("game_managers").mouse;
+    let managers = get_managers().as_ref().unwrap();
+    let mouse = &managers.mouse;
 
     let mouse_hit = mouse.hits(Rect::new(position, size));
     set_draw_colors(color);

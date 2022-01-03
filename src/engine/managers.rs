@@ -1,22 +1,37 @@
+use crate::game::State;
+
 use super::{
     control::{gamepad::Gamepad, mouse::Mouse},
     math::rng::{Rng, Xoshiro256PlusPlus},
 };
-use lazy_static::lazy_static;
-use std::sync::Mutex;
 
-lazy_static! {
-    pub static ref MANAGERS: Mutex<Managers<Xoshiro256PlusPlus>> = Mutex::new(Managers {
+static mut MANAGERS: Option<Managers<Xoshiro256PlusPlus>> = None;
+
+pub fn init_managers() {
+    let managers = unsafe { &mut MANAGERS };
+    *managers = Some(Managers {
         rng: Xoshiro256PlusPlus::new(428281),
         gamepad: Gamepad::new(),
         mouse: Mouse::new(),
+        state: State::new(),
     });
+}
+
+pub fn get_managers() -> &'static Option<Managers<Xoshiro256PlusPlus>> {
+    //Safety: wasm4 is single threaded
+    unsafe { &MANAGERS }
+}
+
+pub fn get_managers_mut() -> &'static mut Option<Managers<Xoshiro256PlusPlus>> {
+    //Safety: wasm4 is single threaded
+    unsafe { &mut MANAGERS }
 }
 
 pub struct Managers<T: Rng> {
     pub gamepad: Gamepad,
     pub mouse: Mouse,
     pub rng: T,
+    pub state: State,
 }
 
 impl<T: Rng> Managers<T> {
