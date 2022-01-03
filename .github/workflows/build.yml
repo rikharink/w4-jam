@@ -12,9 +12,10 @@ jobs:
         uses: styfle/cancel-workflow-action@0.9.1
         with:
           access_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: install packages
-        run: |
-          sudo apt-get -y install binaryen
+      - name: install binaryen
+        uses: jaxxstorm/action-install-gh-release@release/v1-alpha
+        with:
+          repo: WebAssembly/binaryen/
       - uses: actions/checkout@v2
       - uses: actions-rs/toolchain@v1
         with:
