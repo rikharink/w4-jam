@@ -26,8 +26,6 @@ impl Rng for Xoshiro256PlusPlus {
         Self { state }
     }
 
-    
-
     fn max(&self) -> u64 {
         u64::MAX
     }

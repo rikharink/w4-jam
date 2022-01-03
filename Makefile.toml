@@ -1,0 +1,64 @@
+[tasks.format]
+install_crate = "rustfmt"
+command = "cargo"
+args = ["fmt", "--", "--emit=files"]
+
+[tasks.clean]
+dependencies = ["clean-cargo", "clean-dist"]
+
+[tasks.clean-cargo]
+command = "cargo"
+args = ["clean"]
+
+[tasks.clean-dist]
+script = "rm -rf dist"
+
+[tasks.build]
+command = "cargo"
+args = ["build", "--release"]
+dependencies = ["clean"]
+
+[tasks.copy]
+script = [
+    "mkdir -p dist",
+    "cp target/wasm32-unknown-unknown/release/*.wasm dist/cart.wasm"
+]
+
+[tasks.wasm-snip]
+script = "wasm-snip --snip-rust-fmt-code --snip-rust-panicking-code -o dist/cart.wasm dist/cart.wasm"
+
+[tasks.wasm-opt]
+script = "wasm-opt -Oz --strip-producers --strip-debug --dce --zero-filled-memory dist/cart.wasm -o dist/cart.wasm"
+
+[tasks.stat]
+script = "echo \"cart size: $(stat -c%s dist/cart.wasm) bytes\""
+
+[tasks.run]
+script = "w4 run dist/cart.wasm"
+
+[tasks.develop]
+script = "w4 watch"
+
+[tasks.w4]
+dependencies = [
+    "format",
+    "clean",
+    "build",
+    "copy",
+    "wasm-snip",
+    "wasm-opt",
+    "stat"
+]
+
+[tasks.w4-run]
+dependencies = [
+    "w4",
+    "run"
+]
+
+[tasks.w4-bundle]
+script = "w4 bundle dist/cart.wasm --html dist/index.html"
+dependencies = ["w4"]
+
+[tasks.default]
+alias = "w4"
