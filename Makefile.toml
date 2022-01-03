@@ -57,7 +57,9 @@ dependencies = [
 ]
 
 [tasks.w4-bundle]
-script = "w4 bundle dist/cart.wasm --html dist/index.html"
+script = [
+    "w4 bundle dist/cart.wasm --html public/index.html"
+]
 dependencies = ["w4"]
 
 [tasks.default]
