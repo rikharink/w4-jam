@@ -25,6 +25,9 @@ jobs:
         run: |
           tar -xvf binaryen.tar.gz
           sudo cp ./binaryen-${{ env.BINARYEN_VERSION }}/bin/wasm-opt /usr/local/bin
+      - name: setup wasm4
+        run: | 
+          sudo npm install -g wasm4
       - uses: actions/checkout@v2
       - uses: actions-rs/toolchain@v1
         with:
