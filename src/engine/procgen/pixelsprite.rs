@@ -64,7 +64,7 @@ impl From<i8> for MaskData {
             0 => MaskData::Empty,
             1 => MaskData::EmptyBody,
             2 => MaskData::BorderBody,
-            _ => panic!(),
+            _ => MaskData::Empty,
         }
     }
 }
@@ -85,7 +85,7 @@ impl From<MaskData> for SpriteData {
             MaskData::AlwaysBorder => SpriteData::Border,
             MaskData::Empty => SpriteData::Empty,
             MaskData::EmptyBody => SpriteData::Border,
-            _ => panic!(),
+            _ => SpriteData::Empty,
         }
     }
 }

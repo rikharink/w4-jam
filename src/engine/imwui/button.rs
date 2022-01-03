@@ -7,7 +7,7 @@ use crate::{
         },
         rendering::{set_draw_colors, DrawColor},
     },
-    wasm4,
+    unwrap_abort, wasm4,
 };
 
 const FONT_SIZE: u32 = 8;
@@ -15,7 +15,7 @@ const FONT_SIZE: u32 = 8;
 fn measure_text(text: &str) -> UVec2 {
     let lines: Vec<&str> = text.split('\n').collect();
     let nr_lines = lines.len() as u32;
-    let max_width = lines.iter().map(|l| l.len()).max().unwrap() as u32;
+    let max_width = unwrap_abort(lines.iter().map(|l| l.len()).max()) as u32;
 
     UVec2(max_width * FONT_SIZE, nr_lines * FONT_SIZE)
 }
@@ -24,7 +24,7 @@ pub fn button(label: &str, position: IVec2, color: &DrawColor) -> bool {
     let padding: UVec2 = UVec2(4, 4);
     let inverse_color = DrawColor::new(color.color_2(), color.color_1(), 0, 0);
     let size = (measure_text(label) + padding + padding) - UVec2(1, 1);
-    let managers = get_managers().as_ref().unwrap();
+    let managers = unwrap_abort(get_managers().as_ref());
     let mouse = &managers.mouse;
 
     let mouse_hit = mouse.hits(Rect::new(position, size));

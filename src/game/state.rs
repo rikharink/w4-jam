@@ -1,8 +1,11 @@
-use crate::engine::{
-    imwui,
-    managers::get_managers_mut,
-    math::{rng::Rng, vector::IVec2},
-    rendering::{DrawColor, Palette},
+use crate::{
+    engine::{
+        imwui,
+        managers::get_managers_mut,
+        math::{rng::Rng, vector::IVec2},
+        rendering::{DrawColor, Palette},
+    },
+    unwrap_abort,
 };
 pub struct State {
     pub current_frame: u64,
@@ -24,7 +27,7 @@ impl State {
     }
 
     pub fn update(&mut self) {
-        let managers = get_managers_mut().as_mut().unwrap();
+        let managers = unwrap_abort(get_managers_mut().as_mut());
         self.current_frame = self.current_frame.overflowing_add(1).0;
         managers.update(self.current_frame);
         if imwui::button("start", IVec2(60, 70), &DrawColor::new(3, 4, 0, 0)) {
