@@ -1,0 +1,42 @@
+name: Build
+on:
+  push:
+    branches: [main]
+env:
+  CARGO_TERM_COLOR: always
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.1
+        with:
+          access_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: install packages
+        run: |
+          sudo apt-get -y install binaryen
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+      - uses: Swatinem/rust-cache@v1
+      - name: install cargo make
+        uses: baptiste0928/cargo-install@v1.0.0
+        with:
+          crate: cargo-make
+          version: latest
+      - name: install wasm-snip
+        uses: baptiste0928/cargo-install@v1.0.0
+        with:
+          crate: wasm-snip
+          version: latest
+      - name: Build
+        run: cargo make w4-bundle
+      - name: Deploy to GitHub Pages
+        if: success()
+        uses: crazy-max/ghaction-github-pages@v2
+        with:
+          target_branch: gh-pages
+          build_dir: public
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
