@@ -19,6 +19,8 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: nightly
+          components: rustfmt, clippy
+          target: wasm32-unknown-unknown
       - uses: Swatinem/rust-cache@v1
       - name: install cargo make
         uses: baptiste0928/cargo-install@v1.0.0
