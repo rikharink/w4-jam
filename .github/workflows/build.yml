@@ -4,6 +4,7 @@ on:
     branches: [main]
 env:
   CARGO_TERM_COLOR: always
+  BINARYEN_VERSION: version_104
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -12,12 +13,18 @@ jobs:
         uses: styfle/cancel-workflow-action@0.9.1
         with:
           access_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: install binaryen
-        uses: jaxxstorm/action-install-gh-release@release/v1-alpha
+      - name: download binaryen
+        uses: dsaltares/fetch-gh-release-asset@master
         with:
-          repo: WebAssembly/binaryen/
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          repo: "WebAssembly/binaryen"
+          version: "tags/${{ env.BINARYEN_VERSION }}"
+          file: "binaryen-${{ env.BINARYEN_VERSION }}-x86_64-linux.tar.gz"
+          target: "binaryen.tar.gz"
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: setup binaryen
+        run: |
+          tar -xvf binaryen.tar.gz
+          sudo cp ./binaryen-${{ env.BINARYEN_VERSION }}/bin/wasm-opt /usr/local/bin
       - uses: actions/checkout@v2
       - uses: actions-rs/toolchain@v1
         with:
