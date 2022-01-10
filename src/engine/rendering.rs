@@ -33,6 +33,7 @@ pub fn put_pixel(x: i32, y: i32, color: u8) {
     }
 }
 
+#[derive(Copy, Clone)]
 pub struct DrawColor {
     colors: [u16; 4],
 }

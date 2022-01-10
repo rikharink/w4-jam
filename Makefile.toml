@@ -16,7 +16,6 @@ script = "rm -rf dist"
 [tasks.build]
 command = "cargo"
 args = ["build", "--release"]
-dependencies = ["clean"]
 
 [tasks.copy]
 script = [
@@ -37,7 +36,7 @@ script = "echo \"cart size: $(stat -c%s dist/cart.wasm) bytes\""
 script = "w4 run dist/cart.wasm"
 
 [tasks.develop]
-script = "w4 watch"
+script = "cargo watch -x 'make w4-run'"
 
 [tasks.w4]
 dependencies = ["build", "copy", "wasm-snip", "wasm-opt", "stat"]
@@ -48,9 +47,6 @@ dependencies = ["w4", "run"]
 [tasks.w4-bundle]
 script = ["w4 bundle dist/cart.wasm --html public/index.html"]
 dependencies = ["clean", "w4"]
-
-[tasks.w4-watch]
-dependencies = ["w4"]
 
 [tasks.default]
 alias = "w4"

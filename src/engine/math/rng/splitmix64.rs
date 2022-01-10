@@ -3,6 +3,7 @@
    Written in 2015 by Sebastiano Vigna (vigna@acm.org)
 */
 
+#[derive(Clone)]
 pub struct SplitMix64 {
     state: u64,
 }

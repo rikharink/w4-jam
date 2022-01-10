@@ -1,14 +1,16 @@
-use crate::engine::{managers::get_managers_mut, rendering::Palette};
+use crate::engine::{imwui::Style, managers::get_managers_mut, rendering::Palette};
 
 use super::scenes::{self, Scene};
 static mut STATE: Option<State> = None;
 
 pub fn init() {
+    let style = Style::default();
     let state = unsafe { &mut STATE };
     *state = Some(State {
         current_frame: Default::default(),
         palette: Palette([0x46425e, 0x5b768d, 0xd17c7c, 0xf6c6a8]),
         current_scene: Scene::MainMenu,
+        style,
     });
 }
 
@@ -24,6 +26,7 @@ pub struct State {
     pub current_frame: u64,
     pub palette: Palette,
     pub current_scene: Scene,
+    pub style: Style,
 }
 
 impl State {
