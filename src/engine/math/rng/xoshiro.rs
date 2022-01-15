@@ -5,7 +5,7 @@ use super::{Rng, SplitMix64};
    Written in 2019 by David Blackman and Sebastiano Vigna (vigna@acm.org)
 */
 
-#[derive(Clone)]
+#[derive(Copy, Clone)]
 pub struct Xoshiro256PlusPlus {
     pub state: [u64; 4],
 }
@@ -53,7 +53,7 @@ impl Rng for Xoshiro256PlusPlus {
     }
 }
 
-#[derive(Clone)]
+#[derive(Copy, Clone)]
 pub struct Xoshiro256Plus {
     pub state: [u64; 4],
 }

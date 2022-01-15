@@ -4,7 +4,7 @@ mod xoshiro;
 pub use splitmix64::*;
 pub use xoshiro::*;
 
-pub trait Rng {
+pub trait Rng : Copy + Clone {
     fn new(seed: u64) -> Self;
 
     fn max(&self) -> u64;

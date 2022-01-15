@@ -4,7 +4,7 @@ pub struct Background<T: Rng> {
     rng: T,
 }
 
-impl<T: Rng + Copy> Background<T> {
+impl<T: Rng> Background<T> {
     pub fn new(number_of_stars: usize, color: u8) -> Self {
         Self { rng: T::new(123) }
     }

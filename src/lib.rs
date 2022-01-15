@@ -14,9 +14,9 @@ use game::{get_state, get_state_mut};
 
 #[no_mangle]
 fn start() {
-    game::init();
-    imwui::init();
     managers::init();
+    imwui::init();
+    game::init();
 
     let managers = get_managers().as_ref().unwrap();
     let state = get_state().as_ref().unwrap();

@@ -1,4 +1,4 @@
-use crate::engine::math::rng::Rng;
+use crate::{engine::math::rng::Rng, wasm4};
 
 // Pixel Sprite Generator v0.0.2
 //
@@ -88,6 +88,7 @@ impl From<MaskData> for SpriteData {
     }
 }
 
+#[derive(Copy, Clone)]
 pub struct Mask<const SIZE: usize> {
     pub width: usize,
     pub height: usize,
@@ -115,18 +116,18 @@ impl<const SIZE: usize> Mask<SIZE> {
     }
 }
 
-pub struct PixelSprite<TRng: Rng + Copy, const SIZE: usize, const MASK_SIZE: usize> {
+pub struct PixelSprite<'a, TRng: Rng + Clone, const SIZE: usize, const MASK_SIZE: usize> {
     width: usize,
     height: usize,
-    mask: Mask<MASK_SIZE>,
+    mask: &'a Mask<MASK_SIZE>,
     data: [SpriteData; SIZE],
     rng: TRng,
 }
 
-impl<TRNG: Rng + Copy, const SIZE: usize, const MASK_SIZE: usize>
-    PixelSprite<TRNG, SIZE, MASK_SIZE>
+impl<'a, TRNG: Rng + Clone, const SIZE: usize, const MASK_SIZE: usize>
+    PixelSprite<'a, TRNG, SIZE, MASK_SIZE>
 {
-    pub fn new(mask: Mask<MASK_SIZE>, rng: TRNG) -> Self {
+    pub fn new(mask: &'a Mask<MASK_SIZE>, rng: TRNG) -> Self {
         let mut sprite = Self {
             width: mask.width * if mask.mirror_x { 2 } else { 1 },
             height: mask.height * if mask.mirror_y { 2 } else { 1 },
@@ -229,28 +230,43 @@ impl<TRNG: Rng + Copy, const SIZE: usize, const MASK_SIZE: usize>
 
     fn mirror_y(&mut self) {
         for y in 0..self.mask.height {
-            for x in 0..self.mask.width {
+            for x in 0..self.width {
                 self.set_data(x, self.height - y - 1, self.get_data(x, y));
             }
         }
     }
+
+    pub fn print(&self) {
+        for y in 0..self.height {
+            let mut str: heapless::String<48> = heapless::String::new();
+            for x in 0..self.width {
+                match self.get_data(x, y) {
+                    SpriteData::Border => str.push_str("▓"),
+                    SpriteData::Empty => str.push_str("░"),
+                    SpriteData::Body => str.push_str("▒"),
+                }
+                .expect("Couldn't push_str");
+            }
+            wasm4::trace(str);
+        }
+        wasm4::trace("");
+    }
 }
 
-// impl<TRNG: Rng + Copy, const SIZE: usize, const MASK_SIZE: usize> Display
-//     for PixelSprite<TRNG, SIZE, MASK_SIZE>
-// {
-//     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-//         let mut result = String::new();
-//         for y in 0..self.height {
-//             for x in 0..self.width {
-//                 match self.get_data(x, y) {
-//                     SpriteData::Border => result += "▓",
-//                     SpriteData::Empty => result += "░",
-//                     SpriteData::Body => result += "▒",
-//                 }
-//             }
-//             result += "\n";
-//         }
-//         write!(f, "{}", result)
-//     }
-// }
+pub struct PixelSpriteFactory<TRNG: Rng, const SIZE: usize, const MASK_SIZE: usize> {
+    mask: Mask<MASK_SIZE>,
+    rng: TRNG,
+}
+
+impl<TRNG: Rng, const SIZE: usize, const MASK_SIZE: usize>
+    PixelSpriteFactory<TRNG, SIZE, MASK_SIZE>
+{
+    pub fn new(mask: Mask<MASK_SIZE>, rng: TRNG) -> Self {
+        Self { mask, rng }
+    }
+
+    pub fn generate(&mut self) -> PixelSprite<TRNG, SIZE, MASK_SIZE> {
+        self.rng.next();
+        PixelSprite::new(&self.mask, self.rng)
+    }
+}
